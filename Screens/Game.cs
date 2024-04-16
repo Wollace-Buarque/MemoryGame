@@ -77,7 +77,11 @@ public class GameScreen : IScreen
   {
 
     if (Keyboard.GetState().IsKeyDown(Keys.Escape))
+    {
       Globals.GAME_INSTANCE.ChangeScreen(EScreen.MENU);
+      ResetGame();
+      return;
+    }
 
     if (!isEnded && !isCheckingCards && Mouse.GetState().LeftButton == ButtonState.Pressed)
     {
@@ -135,6 +139,7 @@ public class GameScreen : IScreen
       if (timer >= 3)
       {
         Globals.GAME_INSTANCE.ChangeScreen(EScreen.MENU);
+        ResetGame();
       }
     }
 
@@ -142,7 +147,7 @@ public class GameScreen : IScreen
     if (isCheckingCards)
     {
       timer += deltaTime;
-      
+
       if (timer >= intervalInSeconds)
       {
         firstSelectedCardIndex = null;
@@ -184,6 +189,23 @@ public class GameScreen : IScreen
       if (exitSeconds == 0) DrawMessageOnCenter(spriteBatch, "Saindo...", 50);
       else DrawMessageOnCenter(spriteBatch, $"Saindo em {exitSeconds} segundos...", 50);
     }
+  }
+
+  private void ResetGame()
+  {
+    for (int i = 0; i < cardsFound.Length; i++)
+    {
+      cardsFound[i] = false;
+    }
+
+    ShuffleCards();
+
+    firstSelectedCardIndex = null;
+    secondSelectedCardIndex = null;
+    isCheckingCards = false;
+    isEnded = false;
+    timer = 0;
+    score = 0;
   }
 
   private void ShuffleCards()
